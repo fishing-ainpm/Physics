@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { HistoryStore, LibraryStore, browserStorage } from '../core/storage/stores';
 import { AppContext, type AppContextValue, type Drafts, type Tab } from './AppContext';
+import { ShortcutsDialog } from './components/ShortcutsDialog';
+import { VirtualKeyboard } from './components/VirtualKeyboard';
+import { isEditable, submitCurrentPage, trackEditableFocus } from './input/editTarget';
+import { commandFor } from './input/shortcuts';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { EditorPage } from './pages/EditorPage';
 import { GraphsPage } from './pages/GraphsPage';
@@ -36,6 +40,10 @@ export function App() {
   const [historyVersion, setHistoryVersion] = useState(0);
   const [toastMsg, setToastMsg] = useState<string | null>(library.loadWarning);
   const drafts = useRef<Drafts>({});
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  useEffect(() => trackEditableFocus(), []);
 
   useEffect(() => {
     const onHash = () => setTab(tabFromHash());
@@ -54,6 +62,36 @@ export function App() {
     setTab(t);
     window.scrollTo({ top: 0 });
   }, []);
+
+  // Atalhos do teclado físico.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const cmd = commandFor(e, isEditable(e.target));
+      if (!cmd) return;
+      switch (cmd.type) {
+        case 'tab':
+          if (cmd.index < TABS.length) navigate(TABS[cmd.index].id);
+          break;
+        case 'submit':
+          if (!submitCurrentPage()) return;
+          break;
+        case 'toggleKeyboard':
+          setKeyboardOpen((o) => !o);
+          break;
+        case 'help':
+          setHelpOpen(true);
+          break;
+        case 'escape':
+          if (helpOpen) setHelpOpen(false);
+          else if (keyboardOpen) setKeyboardOpen(false);
+          else return;
+          break;
+      }
+      e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navigate, helpOpen, keyboardOpen]);
 
   const ctx: AppContextValue = useMemo(
     () => ({
@@ -121,8 +159,8 @@ export function App() {
             </div>
           </div>
           <nav className="nav" aria-label="Ferramentas">
-            {TABS.map((t) => (
-              <button key={t.id} aria-current={tab === t.id ? 'page' : undefined} onClick={() => navigate(t.id)}>
+            {TABS.map((t, i) => (
+              <button key={t.id} aria-current={tab === t.id ? 'page' : undefined} onClick={() => navigate(t.id)} title={`${t.label} (Alt+${i + 1})`}>
                 <span className="icon" aria-hidden>
                   {t.icon}
                 </span>
@@ -130,11 +168,30 @@ export function App() {
               </button>
             ))}
           </nav>
+          <div className="sidebar-tools">
+            <button className="btn small" onClick={() => setKeyboardOpen((o) => !o)} aria-pressed={keyboardOpen} title="Teclado matemático (Alt+K)">
+              ⌨ Teclado matemático
+            </button>
+            <button className="btn small" onClick={() => setHelpOpen(true)} title="Atalhos de teclado (F1)">
+              Atalhos
+            </button>
+          </div>
         </aside>
         <main className="main" key={`${tab}-${pageKey}`}>
           {page}
         </main>
       </div>
+      <VirtualKeyboard
+        open={keyboardOpen}
+        onClose={() => setKeyboardOpen(false)}
+        onMissingTarget={() => setToastMsg('Toque primeiro no campo onde quer digitar.')}
+      />
+      {!keyboardOpen && (
+        <button className="vk-fab" onClick={() => setKeyboardOpen(true)} aria-label="Abrir teclado matemático (Alt+K)" title="Teclado matemático (Alt+K)">
+          ⌨
+        </button>
+      )}
+      {helpOpen && <ShortcutsDialog onClose={() => setHelpOpen(false)} />}
       {toastMsg && (
         <div className="toast" role="status">
           {toastMsg}

@@ -1,7 +1,10 @@
 // Processo principal do aplicativo de desktop (Electron).
 // Carrega a versão de produção gerada pelo Vite em dist/.
-const { app, BrowserWindow, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell } = require('electron');
 const path = require('node:path');
+
+// Sem barra de menu: assim Alt+1…7 e Alt+K chegam ao aplicativo em vez de abrir o menu do Windows.
+Menu.setApplicationMenu(null);
 
 function createWindow() {
   const win = new BrowserWindow({

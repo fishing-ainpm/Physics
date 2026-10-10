@@ -287,7 +287,7 @@ export function EditorPage() {
               </div>
             )}
             <div className="row">
-              <button className="btn primary" onClick={calculate} disabled={!analysis.ok}>
+              <button className="btn primary" data-submit onClick={calculate} disabled={!analysis.ok}>
                 Calcular
               </button>
               <button className="btn" onClick={checkDims} disabled={!analysis.ok || !analysis.isEquation}>

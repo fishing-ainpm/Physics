@@ -174,9 +174,6 @@ export function CalculatorPage() {
               placeholder={info.placeholder}
               rows={3}
               spellCheck={false}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) run();
-              }}
             />
           </label>
           <div className="chips">
@@ -220,7 +217,7 @@ export function CalculatorPage() {
             </label>
           )}
           <div className="row">
-            <button className="btn primary" onClick={run} disabled={!expression.trim()}>
+            <button className="btn primary" data-submit onClick={run} disabled={!expression.trim()}>
               Calcular
             </button>
             <span className="small muted">Ctrl + Enter</span>

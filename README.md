@@ -51,6 +51,22 @@ npm run preview    # serve a versão de produção em http://localhost:4173
 
 A pasta `dist/` é estática (caminhos relativos) e pode ser publicada em qualquer hospedagem de arquivos (GitHub Pages, Netlify, um servidor nginx etc.).
 
+## Celular, toque e teclado
+
+- **Toque:** botões, abas e controles deslizantes ganham área de toque maior (mínimo de 40–44 px) em telas de toque. Os gráficos aceitam pinça e arraste. O layout se adapta a telas a partir de ~360 px de largura. No celular dá para "Adicionar à tela inicial" (há um manifesto de app web).
+- **Teclado matemático na tela:** botão ⌨ (canto inferior direito) ou `Alt + K`. Tem quatro páginas: números e operadores, funções, constantes e letras gregas, e unidades. As teclas escrevem no último campo tocado, na posição do cursor; funções como `sqrt()` deixam o cursor entre os parênteses e envolvem o texto selecionado. `↵ Calcular` executa a página. No celular, a opção "Esconder teclado do sistema" (ligada por padrão em telas de toque) evita que o teclado do aparelho apareça por cima.
+- **Teclado físico (Windows):**
+
+| Atalho | Ação |
+|---|---|
+| `Ctrl + Enter` | Calcular / executar na página atual |
+| `Alt + 1` … `Alt + 7` | Ir para Editor, Calculadora, Simulações, Gráficos, Unidades, Biblioteca, Histórico |
+| `Alt + K` | Abrir/fechar o teclado matemático |
+| `F1` ou `?` | Lista de atalhos |
+| `Esc` | Fechar o teclado matemático ou a lista de atalhos |
+
+Os atalhos usam a tecla física, então funcionam igual no teclado ABNT2 e no americano; `AltGr` é ignorado para não atrapalhar a digitação de símbolos. No app de desktop a barra de menu foi removida para o `Alt` não abrir o menu do Windows. Em notebooks e tablets com tela de toque, o teclado virtual do próprio Windows continua abrindo normalmente ao tocar num campo.
+
 ## Aplicativo de desktop (Windows)
 
 A plataforma também é distribuída como programa para Windows, empacotada com [Electron](https://www.electronjs.org/). Funciona offline e guarda a biblioteca e o histórico no próprio computador.

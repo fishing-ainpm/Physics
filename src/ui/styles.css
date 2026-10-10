@@ -204,3 +204,70 @@ details.doc ul { margin: 0.3rem 0 0.6rem; padding-left: 1.2rem; color: var(--mut
   background: var(--panel-2); border: 1px solid var(--accent); color: var(--text);
   padding: 0.6rem 1rem; border-radius: 8px; z-index: 100; box-shadow: 0 8px 24px #0008; max-width: calc(100vw - 2rem);
 }
+
+/* ── Toque e celular ──────────────────────────────────── */
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+button, .chip, .tag, input[type='range'], select { touch-action: manipulation; }
+.main { padding-bottom: calc(3rem + var(--kb-height, 0px) + env(safe-area-inset-bottom)); }
+.plot { touch-action: pan-y; }
+
+@media (pointer: coarse) {
+  button.btn, .nav button, .tabs button, select, input:not([type='checkbox']):not([type='radio']):not([type='range']) { min-height: 44px; }
+  button.btn.small { min-height: 40px; padding: 0.4rem 0.75rem; }
+  .chip { padding: 0.45rem 0.8rem; font-size: 0.9rem; }
+  input[type='checkbox'], input[type='radio'] { width: 22px; height: 22px; }
+  .check { min-height: 40px; }
+  input[type='range'] { height: 36px; }
+  input[type='range']::-webkit-slider-thumb { width: 28px; height: 28px; }
+  input[type='range']::-moz-range-thumb { width: 28px; height: 28px; }
+}
+
+.sidebar-tools { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 1rem; padding: 0 0.25rem; }
+@media (max-width: 900px) { .sidebar-tools { display: none; } }
+
+/* ── Teclado matemático na tela ───────────────────────── */
+.vk {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  background: var(--bg-2); border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 24px #0008;
+  padding: 0.5rem max(0.5rem, env(safe-area-inset-left)) calc(0.5rem + env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-right));
+  user-select: none; -webkit-user-select: none;
+}
+.vk > * { max-width: 760px; margin-left: auto; margin-right: auto; }
+.vk-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+.vk-tabs { display: flex; gap: 0.25rem; flex: 1; overflow-x: auto; scrollbar-width: none; }
+.vk-tabs button {
+  background: none; border: 1px solid transparent; color: var(--muted); border-radius: 8px;
+  padding: 0.35rem 0.75rem; font: inherit; cursor: pointer; white-space: nowrap; min-height: 36px;
+}
+.vk-tabs button[aria-selected='true'] { background: var(--panel-2); color: var(--text); border-color: var(--border); }
+.vk-suppress { white-space: nowrap; }
+.vk-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.35rem; }
+.vk-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 2fr); gap: 0.35rem; margin-top: 0.35rem; }
+.vk-key {
+  min-height: 46px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--panel-2); color: var(--text); font: inherit; font-size: 1.05rem;
+  cursor: pointer; padding: 0 0.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.vk-key:hover { border-color: var(--accent-2); }
+.vk-key:active { background: #22305a; transform: translateY(1px); }
+.vk-key.accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+@media (max-width: 480px) {
+  .vk-suppress { display: none; }
+  .vk-key { min-height: 44px; font-size: 0.95rem; }
+}
+.vk-fab {
+  position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 40;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-ink); border: none; font-size: 1.4rem; cursor: pointer;
+  box-shadow: 0 6px 18px #0009;
+}
+.toast { bottom: calc(1rem + var(--kb-height, 0px) + env(safe-area-inset-bottom)); }
+
+/* ── Janela de atalhos ────────────────────────────────── */
+.modal-backdrop { position: fixed; inset: 0; background: #0009; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal { width: 100%; max-width: 620px; max-height: calc(100vh - 2rem); overflow: auto; }
+kbd {
+  font-family: var(--mono); font-size: 0.82rem; background: var(--bg-2); border: 1px solid var(--border);
+  border-bottom-width: 2px; border-radius: 5px; padding: 0.05rem 0.4rem;
+}

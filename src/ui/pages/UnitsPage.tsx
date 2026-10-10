@@ -121,7 +121,7 @@ function Converter({ addHistory }: { addHistory: AddHistory }) {
           Qualquer unidade do mathjs pode ser digitada, inclusive compostas (ex.: <code>kg*m/s^2</code>, <code>km/h</code>). Prefixos SI são aceitos (MeV, nm, µs → us).
         </p>
         <div className="row">
-          <button className="btn primary" onClick={convert}>
+          <button className="btn primary" data-submit onClick={convert}>
             Converter
           </button>
         </div>
@@ -165,7 +165,7 @@ function Dimensions({ addHistory }: { addHistory: AddHistory }) {
           ))}
         </div>
         <div className="row">
-          <button className="btn primary" onClick={run}>
+          <button className="btn primary" data-submit onClick={run}>
             Analisar
           </button>
         </div>
@@ -249,7 +249,7 @@ function EquationCheck({ addHistory }: { addHistory: AddHistory }) {
         )}
         <p className="small muted">Constantes conhecidas (c, G, hbar, ...) recebem a unidade SI automaticamente.</p>
         <div className="row">
-          <button className="btn primary" onClick={run} disabled={symbols.length === 0}>
+          <button className="btn primary" data-submit onClick={run} disabled={symbols.length === 0}>
             Verificar
           </button>
         </div>

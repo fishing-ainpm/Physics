@@ -152,7 +152,7 @@ export function SimulationsPage() {
                 );
               })}
               <div className="row">
-                <button className="btn primary" type="submit" disabled={running}>
+                <button className="btn primary" type="submit" data-submit disabled={running}>
                   {running ? 'Executando…' : 'Executar'}
                 </button>
                 <button className="btn" type="button" onClick={reset} disabled={running}>
