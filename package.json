@@ -1,7 +1,7 @@
 {
   "name": "theoretical-physics-web",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Plataforma web para construir fórmulas de física teórica, calcular e simular modelos físicos.",
   "type": "module",
   "scripts": {
