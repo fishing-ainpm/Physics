@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Física Teórica</string>
+    <string name="title_activity_main">Física Teórica</string>
+    <string name="package_name">com.fishingainpm.fisicateorica</string>
+    <string name="custom_url_scheme">com.fishingainpm.fisicateorica</string>
+</resources>

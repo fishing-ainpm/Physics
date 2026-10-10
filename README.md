@@ -1,0 +1,192 @@
+# Física Teórica na Web
+
+Plataforma web para **construir fórmulas de física teórica, fazer cálculos matemáticos e simular modelos físicos**, com interface em português brasileiro, tema escuro e layout responsivo (celular e computador).
+
+Tudo roda no navegador: não há servidor nem conta. A biblioteca e o histórico ficam salvos no `localStorage` do navegador e podem ser exportados e importados em JSON.
+
+## Funcionalidades
+
+| Ferramenta | O que faz |
+|---|---|
+| **Editor de fórmulas** | Escreva expressões ou equações com pré-visualização em LaTeX (KaTeX). Detecta variáveis e constantes físicas, calcula qualquer variável a partir das outras (isolamento direto, solução polinomial fechada ou busca numérica em escala logarítmica), verifica as dimensões e envia a fórmula para o gráfico. |
+| **Calculadora** | Avalia expressões com unidades (`3 m/s * 2 s`, `1 eV to J`), simplifica, deriva, resolve equações (forma fechada até grau 3, método de Brent nos outros casos) e calcula integrais definidas (Simpson adaptativo). |
+| **Simulações** | 8 modelos com parâmetros ajustáveis, resultados numéricos, gráficos e documentação (equações, método, hipóteses, limitações, referências). |
+| **Gráficos** | Plota até 8 funções. Símbolos extras viram parâmetros com controles deslizantes. Zoom, deslocamento, escala log e exportação PNG (Plotly). |
+| **Unidades** | Conversão entre unidades compatíveis, análise dimensional de expressões, verificação dimensional de equações e tabela de constantes (CODATA 2018). |
+| **Biblioteca** | Salve, edite, duplique, exclua e organize fórmulas por área, projeto e etiquetas. Inclui catálogo com 37 fórmulas de referência documentadas. Exporta e importa JSON. |
+| **Histórico** | Registra cálculos, conversões, simulações e gráficos (até 300 entradas), com busca, filtros e botão **Reabrir** para refazer o cálculo na ferramenta de origem. |
+
+### Simulações disponíveis
+
+| Área | Modelo | Método |
+|---|---|---|
+| Mecânica clássica | Projétil com arrasto quadrático vs. vácuo | RK4 |
+| Mecânica clássica | Pêndulo simples não linear com amortecimento | RK4 + período exato por AGM |
+| Relatividade | Foguete com aceleração própria constante (movimento hiperbólico) | Analítico |
+| Mecânica quântica | Partícula em poço infinito: superposição de estados e evolução temporal | Analítico + integração numérica |
+| Cosmologia | Expansão ΛCDM (Friedmann): idade, a(t), distâncias, H(z) | Quadratura adaptativa |
+| Termodinâmica | Distribuição de Maxwell–Boltzmann | Analítico |
+| Termodinâmica | Processos isotérmico/adiabático/isobárico (diagrama P–V) | Analítico + ∫P dV numérico |
+| Eletromagnetismo | Carga em campos E e B uniformes (cíclotron e deriva E×B) | Integrador de Boris |
+
+Equações, hipóteses e limitações de cada modelo estão em [`docs/MODELOS.md`](docs/MODELOS.md) e também aparecem na própria interface.
+
+## Instalação e execução
+
+Requisitos: **Node.js 20 ou superior** e npm.
+
+```bash
+npm install        # instala as dependências
+npm run dev        # servidor de desenvolvimento em http://localhost:5173
+```
+
+Outros comandos:
+
+```bash
+npm test           # roda os testes (Vitest)
+npm run typecheck  # verificação de tipos (TypeScript)
+npm run build      # gera a versão de produção em dist/
+npm run preview    # serve a versão de produção em http://localhost:4173
+```
+
+A pasta `dist/` é estática (caminhos relativos) e pode ser publicada em qualquer hospedagem de arquivos (GitHub Pages, Netlify, um servidor nginx etc.).
+
+## Celular, toque e teclado
+
+- **Toque:** botões, abas e controles deslizantes ganham área de toque maior (mínimo de 40–44 px) em telas de toque. Os gráficos aceitam pinça e arraste. O layout se adapta a telas a partir de ~360 px de largura. No celular dá para "Adicionar à tela inicial" (há um manifesto de app web).
+- **Teclado matemático na tela:** botão ⌨ (canto inferior direito) ou `Alt + K`. Tem quatro páginas: números e operadores, funções, constantes e letras gregas, e unidades. As teclas escrevem no último campo tocado, na posição do cursor; funções como `sqrt()` deixam o cursor entre os parênteses e envolvem o texto selecionado. `↵ Calcular` executa a página. No celular, a opção "Esconder teclado do sistema" (ligada por padrão em telas de toque) evita que o teclado do aparelho apareça por cima.
+- **Teclado físico (Windows):**
+
+| Atalho | Ação |
+|---|---|
+| `Ctrl + Enter` | Calcular / executar na página atual |
+| `Alt + 1` … `Alt + 7` | Ir para Editor, Calculadora, Simulações, Gráficos, Unidades, Biblioteca, Histórico |
+| `Alt + K` | Abrir/fechar o teclado matemático |
+| `F1` ou `?` | Lista de atalhos |
+| `Esc` | Fechar o teclado matemático ou a lista de atalhos |
+
+Os atalhos usam a tecla física, então funcionam igual no teclado ABNT2 e no americano; `AltGr` é ignorado para não atrapalhar a digitação de símbolos. No app de desktop a barra de menu foi removida para o `Alt` não abrir o menu do Windows. Em notebooks e tablets com tela de toque, o teclado virtual do próprio Windows continua abrindo normalmente ao tocar num campo.
+
+## Aplicativo Android (APK)
+
+O app Android é a mesma plataforma empacotada com [Capacitor](https://capacitorjs.com/) (pasta `android/`). Funciona offline e exige Android 7.0 ou superior.
+
+- **Baixar:** arquivo `FisicaTeorica-<versão>.apk` na página [Releases](../../releases). No celular, abra o arquivo e autorize a instalação desta fonte.
+- **Compilar localmente:** precisa do Android SDK e do JDK 21. Rode `npm run android:apk`; o APK sai em `android/app/build/outputs/apk/release/`. Para abrir no Android Studio, use `npm run android:sync` e abra a pasta `android/`.
+- **Orientação da tela:** em **Configurações** (⚙ na barra de navegação) dá para escolher Automática (gira com o aparelho), Retrato ou Paisagem. Com o celular deitado, o layout usa duas colunas e o teclado matemático fica com 12 teclas por linha.
+- **Versão:** `versionName` e `versionCode` vêm do `version` do `package.json` (0.2.0 → código 200).
+- **Assinatura:** por padrão o APK é assinado com a chave de teste versionada em `android/app/fisicateorica-debug.keystore`. Ela mantém a mesma assinatura entre versões, para o app atualizar sem desinstalar, mas é pública e não serve para a Play Store. Para usar uma chave própria, defina no build as variáveis `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD`. Trocar de chave obriga quem já instalou a desinstalar uma vez.
+
+## Aplicativo de desktop (Windows)
+
+A plataforma também é distribuída como programa para Windows, empacotada com [Electron](https://www.electronjs.org/). Funciona offline e guarda a biblioteca e o histórico no próprio computador.
+
+- **Baixar:** página [Releases](../../releases) do repositório. Use `FisicaTeorica-Setup-<versão>.exe` (instalador) ou `FisicaTeorica-Portatil-<versão>.exe` (roda sem instalar).
+- **Rodar a versão desktop em desenvolvimento:** `npm run desktop`.
+- **Gerar o `.exe` localmente:** `npm run dist:win` (os arquivos saem em `release/`). No Windows funciona direto; no Linux/macOS é preciso ter o Wine instalado (com suporte a 32 bits).
+- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila os `.exe` no Windows e o `.apk` no Linux e anexa tudo ao Release, usando como texto o arquivo `release-notes/<tag>.md`. Também dá para disparar manualmente em **Actions → Release → Run workflow**, informando a versão (ex.: `v0.2.0`); a tag é criada automaticamente.
+
+O executável não tem assinatura digital, então o Windows SmartScreen pode mostrar um aviso na primeira execução ("Mais informações" → "Executar assim mesmo").
+
+## Arquitetura
+
+```
+src/
+├── core/                  # Lógica pura em TypeScript (sem DOM, testável)
+│   ├── math/engine.ts     # Avaliação, simplificação, derivadas, equações, integrais (mathjs)
+│   ├── units/units.ts     # Conversão de unidades e análise dimensional
+│   ├── physics/
+│   │   ├── constants.ts   # Constantes CODATA 2018 / SI 2019
+│   │   ├── formulas.ts    # Catálogo de fórmulas documentadas
+│   │   ├── formulaSolver.ts
+│   │   └── areas.ts
+│   ├── simulations/
+│   │   ├── types.ts       # Interface SimulationModel e validação de parâmetros
+│   │   ├── integrators.ts # RK4, AGM
+│   │   ├── models/        # Um arquivo por modelo físico
+│   │   └── index.ts       # Registro de modelos
+│   └── storage/stores.ts  # Biblioteca e histórico (armazenamento injetável)
+└── ui/                    # Interface React
+    ├── App.tsx, AppContext.tsx
+    ├── components/        # Tex (KaTeX), Plot (Plotly), ResultPanel
+    └── pages/             # Uma página por ferramenta
+tests/                     # Testes dos cálculos principais
+electron/main.cjs          # Processo principal do app de desktop
+android/                   # Projeto Android (Capacitor)
+release-notes/             # Texto de cada Release (vX.Y.Z.md)
+build/                     # Ícone do aplicativo
+.github/workflows/         # Build e publicação do .exe no GitHub Releases
+```
+
+Bibliotecas: [mathjs](https://mathjs.org) (matemática simbólica, numérica e unidades), [KaTeX](https://katex.org) (fórmulas), [Plotly.js](https://plotly.com/javascript/) (gráficos interativos, carregado sob demanda), React + Vite + TypeScript, Vitest.
+
+A interface nunca faz contas: ela chama funções de `src/core`, que validam as entradas e lançam `MathError` com mensagens em português, exibidas no painel de resultados e erros.
+
+### Como adicionar um novo modelo físico
+
+1. Crie `src/core/simulations/models/meuModelo.ts` exportando um objeto `SimulationModel` (veja `types.ts`): parâmetros com limites, equações em LaTeX, método, hipóteses, limitações, referências e a função `run(params)` que devolve resumo numérico, gráficos e avisos.
+2. Inclua o modelo na lista `SIMULATIONS` em `src/core/simulations/index.ts`.
+3. Escreva testes em `tests/` comparando com um resultado analítico ou tabelado.
+
+A página de simulações monta o formulário, os gráficos e a documentação automaticamente.
+
+### Como adicionar uma fórmula ao catálogo
+
+Acrescente um item a `FORMULA_CATALOG` em `src/core/physics/formulas.ts`. O teste `formulas.test.ts` verifica automaticamente que todas as variáveis estão documentadas e que a fórmula é **dimensionalmente consistente** com as unidades declaradas.
+
+## Sintaxe das expressões
+
+- Operadores: `+ - * / ^`, multiplicação implícita (`2x`), parênteses.
+- Funções: `sqrt`, `exp`, `log` (natural), `log10`, `sin`, `cos`, `tan`, `asin`, `sinh`, `abs` etc. Ângulos em radianos.
+- Constantes matemáticas: `pi`, `e`.
+- Constantes físicas (valores SI): `c`, `G`, `h`, `hbar`, `qe` (carga elementar), `kB`, `NA`, `R`, `me`, `mp`, `mn`, `amu`, `eps0`, `mu0`, `alpha`, `sigmaSB`, `bWien`, `a0`, `g0`, `Msun`. A lista completa está em **Unidades → Constantes físicas**.
+- Unidades (calculadora e conversor): `m`, `km`, `s`, `kg`, `N`, `J`, `eV`, `MeV`, `K`, `degC`, `Pa`, `atm`, `T`, `au`, `lightyear`, `parsec` e as demais do mathjs, com prefixos SI.
+
+### Validação no editor de fórmulas e nos gráficos
+
+O editor só aceita expressões matemáticas. O texto é recusado, com uma mensagem explicando o motivo, quando tem:
+
+- **Texto comum**, como palavras seguidas sem operador entre elas (`sua mãe de quatrão`, `calcule a força`). Nenhuma variável é criada a partir das palavras.
+- **Falta de operador** entre dois nomes (`F = m a` → use `m*a`).
+- **Acentos ou letras fora de a–z** nos nomes (`mãe`, `λ`). Para letras gregas, escreva o nome: `lambda`, `theta`, `omega`.
+- **Funções desconhecidas**, ou uma variável usada como função (`F = m(a+b)` → use `m*(a+b)`).
+- **Nome de função sem argumento** (`y = sin + 1`).
+- **Palavras reservadas** (`to`, `in`, `and`, `or`, `not`…), **símbolos fora da matemática** (`;`, `[ ]`, `<`, `>`, aspas) ou mais de um `=`.
+
+Continuam valendo: nomes com dígitos e `_` (`v0`, `m1`, `T_h`, `lambda_max`, `v_esc`), letras gregas por extenso, as constantes físicas (`c`, `G`, `hbar`, `kB`…), multiplicação implícita com número (`2x`, `2 x`), `mod`, `!` e as funções comuns (`sin`, `cos`, `tan` e inversas e hiperbólicas, `exp`, `log`, `log10`, `sqrt`, `cbrt`, `abs`, `atan2`, `min`, `max`, `floor`, `ceil`, `round`…). A regra fica em `src/core/math/formulaValidation.ts`; os testes estão em `tests/formulaValidation.test.ts`. A calculadora continua aceitando unidades e conversões (`3 m/s * 2 s`, `5 km to mi`).
+
+> Na calculadora, com "Usar constantes físicas" ativado, `h` é a constante de Planck. Para horas use `hour`.
+
+## Verificação dos cálculos
+
+Os testes (`npm test`, 70+ casos) comparam os resultados com valores conhecidos, entre eles:
+
+| Caso | Valor esperado |
+|---|---|
+| Raiz de `cos x = x` | 0,739085133215 (número de Dottie) |
+| ∫ e^(−x²) dx em [−10, 10] | √π |
+| Energia de repouso de 1 kg | 8,98755 × 10¹⁶ J |
+| Estado fundamental do hidrogênio (Bohr) | −13,606 eV |
+| Raio de Schwarzschild do Sol | ≈ 2953 m |
+| Volume molar a 0 °C e 1 atm | 0,0224140 m³ |
+| Pêndulo a 90°: T/T₀ | 1,18034 |
+| Projétil sem arrasto | R = v₀² sen 2θ / g |
+| 1 g durante 1 ano (relatividade) | v ≈ 0,718 c |
+| Elétron em poço de 1 nm | E₁ ≈ 0,376 eV |
+| Einstein–de Sitter | t₀ = 2/(3H₀), D_C(z) analítica |
+| ΛCDM Planck 2018 | idade ≈ 13,8 Ga |
+| N₂ a 300 K | v_rms ≈ 517 m/s |
+| Próton em B = 1 T | T_c = 2πm/(qB), órbita fechada, \|v\| conservado |
+| Deriva E×B | v = E/B |
+
+Os testes também verificaram a **consistência dimensional de todas as 37 fórmulas do catálogo**.
+
+## Hipóteses e limitações gerais
+
+- Os valores numéricos usam ponto flutuante de dupla precisão (~15–16 dígitos significativos).
+- No editor de fórmulas, os valores são **interpretados em unidades SI**. As unidades informadas servem para a verificação dimensional, não para conversão automática.
+- A simplificação simbólica é a do mathjs: não aplica identidades trigonométricas nem fatoração avançada.
+- A busca numérica de raízes encontra raízes com mudança de sinal. Raízes de multiplicidade par (ex.: `x^2 = 0` resolvida numericamente) ou fora do intervalo podem não aparecer. Os polos são descartados.
+- O radiano é tratado como adimensional (convenção do SI).
+- Os dados ficam só no navegador atual. Limpar os dados do site apaga a biblioteca; use **Exportar JSON** para guardar uma cópia.
+- Cada simulação lista as próprias limitações (ex.: o pêndulo e a partícula carregada não são relativísticos, e o ΛCDM usa w = −1 constante).

@@ -1,0 +1,20 @@
+{
+  "name": "Física Teórica na Web",
+  "short_name": "Física Teórica",
+  "description": "Fórmulas, cálculos e simulações de física teórica.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "orientation": "any"
+}
