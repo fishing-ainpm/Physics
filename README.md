@@ -67,6 +67,15 @@ A pasta `dist/` é estática (caminhos relativos) e pode ser publicada em qualqu
 
 Os atalhos usam a tecla física, então funcionam igual no teclado ABNT2 e no americano; `AltGr` é ignorado para não atrapalhar a digitação de símbolos. No app de desktop a barra de menu foi removida para o `Alt` não abrir o menu do Windows. Em notebooks e tablets com tela de toque, o teclado virtual do próprio Windows continua abrindo normalmente ao tocar num campo.
 
+## Aplicativo Android (APK)
+
+O app Android é a mesma plataforma empacotada com [Capacitor](https://capacitorjs.com/) (pasta `android/`). Funciona offline e exige Android 7.0 ou superior.
+
+- **Baixar:** arquivo `FisicaTeorica-<versão>.apk` na página [Releases](../../releases). No celular, abra o arquivo e autorize a instalação desta fonte.
+- **Compilar localmente:** precisa do Android SDK e do JDK 21. Rode `npm run android:apk`; o APK sai em `android/app/build/outputs/apk/release/`. Para abrir no Android Studio, use `npm run android:sync` e abra a pasta `android/`.
+- **Versão:** `versionName` e `versionCode` vêm do `version` do `package.json` (0.2.0 → código 200).
+- **Assinatura:** por padrão o APK é assinado com a chave de teste versionada em `android/app/fisicateorica-debug.keystore`. Ela mantém a mesma assinatura entre versões, para o app atualizar sem desinstalar, mas é pública e não serve para a Play Store. Para usar uma chave própria, defina no build as variáveis `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD`. Trocar de chave obriga quem já instalou a desinstalar uma vez.
+
 ## Aplicativo de desktop (Windows)
 
 A plataforma também é distribuída como programa para Windows, empacotada com [Electron](https://www.electronjs.org/). Funciona offline e guarda a biblioteca e o histórico no próprio computador.
@@ -74,7 +83,7 @@ A plataforma também é distribuída como programa para Windows, empacotada com 
 - **Baixar:** página [Releases](../../releases) do repositório. Use `FisicaTeorica-Setup-<versão>.exe` (instalador) ou `FisicaTeorica-Portatil-<versão>.exe` (roda sem instalar).
 - **Rodar a versão desktop em desenvolvimento:** `npm run desktop`.
 - **Gerar o `.exe` localmente:** `npm run dist:win` (os arquivos saem em `release/`). No Windows funciona direto; no Linux/macOS é preciso ter o Wine instalado (com suporte a 32 bits).
-- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila no Windows e anexa os executáveis ao Release. Também dá para disparar manualmente em **Actions → Release Windows → Run workflow**, informando a versão (ex.: `v0.2.0`); a tag é criada automaticamente.
+- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila os `.exe` no Windows e o `.apk` no Linux e anexa tudo ao Release, usando como texto o arquivo `release-notes/<tag>.md`. Também dá para disparar manualmente em **Actions → Release → Run workflow**, informando a versão (ex.: `v0.2.0`); a tag é criada automaticamente.
 
 O executável não tem assinatura digital, então o Windows SmartScreen pode mostrar um aviso na primeira execução ("Mais informações" → "Executar assim mesmo").
 
@@ -102,6 +111,8 @@ src/
     └── pages/             # Uma página por ferramenta
 tests/                     # Testes dos cálculos principais
 electron/main.cjs          # Processo principal do app de desktop
+android/                   # Projeto Android (Capacitor)
+release-notes/             # Texto de cada Release (vX.Y.Z.md)
 build/                     # Ícone do aplicativo
 .github/workflows/         # Build e publicação do .exe no GitHub Releases
 ```

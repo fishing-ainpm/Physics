@@ -1,0 +1,8 @@
+{
+  "appId": "com.fishingainpm.fisicateorica",
+  "appName": "Física Teórica",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#0a0f1c"
+  }
+}
