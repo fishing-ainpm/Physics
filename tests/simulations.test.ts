@@ -82,7 +82,7 @@ describe('relatividade', () => {
 
 describe('mecânica quântica', () => {
   it('elétron em poço de 1 nm: E₁ ≈ 0,376 eV', () => {
-    expect(boxEnergy(1, K('me'), 1e-9) / K('eV')).toBeCloseTo(0.376, 3);
+    expect(boxEnergy(1, K('me'), 1e-9) / K('qe')).toBeCloseTo(0.376, 3);
     expect(boxEnergy(3, K('me'), 1e-9) / boxEnergy(1, K('me'), 1e-9)).toBeCloseTo(9, 12);
   });
   it('superposição normalizada', () => {
@@ -150,5 +150,12 @@ describe('eletromagnetismo', () => {
     const { get } = summary('charged-particle', { Ex: 0, Ey: 200, Bz: 0.01 });
     expect(get('Deriva E×B teórica v_x')).toBeCloseTo(2e4, 6);
     expect(get('Deriva simulada v_x') / 2e4).toBeCloseTo(1, 3);
+  });
+});
+
+describe('documentação', () => {
+  it('equações de todos os modelos renderizam no KaTeX', async () => {
+    const katex = (await import('katex')).default;
+    for (const m of SIMULATIONS) for (const eq of m.equations) expect(() => katex.renderToString(eq, { throwOnError: true }), `${m.id}: ${eq}`).not.toThrow();
   });
 });

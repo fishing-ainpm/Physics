@@ -45,7 +45,7 @@ describe('resolução de fórmulas (exemplos conhecidos)', () => {
   });
   it('estado fundamental do hidrogênio ≈ −13,6 eV', () => {
     const r = solveFormula('E = -me * qe^4 / (8 * eps0^2 * h^2 * n^2)', 'E', { n: 1 });
-    expect(r.values[0] / K('eV')).toBeCloseTo(-13.6057, 3);
+    expect(r.values[0] / K('qe')).toBeCloseTo(-13.6057, 3);
   });
   it('raio de Schwarzschild do Sol ≈ 2,95 km', () => {
     const r = solveFormula('r_s = 2 * G * M / c^2', 'r_s', { M: K('Msun') });
@@ -66,5 +66,16 @@ describe('resolução de fórmulas (exemplos conhecidos)', () => {
   it('erros claros', () => {
     expect(() => solveFormula('F = m * a', 'F', { m: 2 })).toThrow(/Informe valores para: a/);
     expect(() => solveFormula('F = m * a', null, { m: 2, a: 1 })).toThrow(/Escolha a variável/);
+  });
+});
+
+describe('renderização LaTeX', () => {
+  it('todas as fórmulas do catálogo e suas formas geradas renderizam no KaTeX', async () => {
+    const katex = (await import('katex')).default;
+    for (const f of FORMULA_CATALOG) {
+      expect(() => katex.renderToString(f.tex, { throwOnError: true }), `${f.id} (tex manual)`).not.toThrow();
+      const generated = analyzeFormula(f.expression).tex;
+      expect(() => katex.renderToString(generated, { throwOnError: true }), `${f.id}: ${generated}`).not.toThrow();
+    }
   });
 });

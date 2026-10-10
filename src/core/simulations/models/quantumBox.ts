@@ -43,7 +43,7 @@ export const quantumBoxModel: SimulationModel = {
   references: ['Griffiths, Introduction to Quantum Mechanics, §2.2', 'Constantes CODATA 2018'],
   parameters: [
     { key: 'L', label: 'Largura do poço', unit: 'nm', default: 1, min: 0.01, max: 1e4, step: 0.01 },
-    { key: 'massRatio', label: 'Massa (em massas do elétron)', unit: 'mₑ', default: 1, min: 1e-3, max: 1e6, step: 0.01 },
+    { key: 'massRatio', label: 'Massa', unit: 'mₑ', default: 1, min: 1e-3, max: 1e6, step: 0.01 },
     { key: 'n1', label: 'Estado n₁', unit: '', default: 1, min: 1, max: 50, step: 1, integer: true },
     { key: 'n2', label: 'Estado n₂', unit: '', default: 2, min: 1, max: 50, step: 1, integer: true },
     { key: 'w', label: 'Peso de n₂ na superposição (w)', unit: '', default: 0.5, min: 0, max: 1, step: 0.01 },
@@ -52,7 +52,7 @@ export const quantumBoxModel: SimulationModel = {
   run(p) {
     const L = p.L * 1e-9;
     const m = p.massRatio * K('me');
-    const eV = K('eV');
+    const eV = K('qe');
     const hbar = K('hbar');
     const warnings: string[] = [];
     const E1 = boxEnergy(p.n1, m, L);

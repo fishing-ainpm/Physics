@@ -7,8 +7,10 @@ import {
   freeSymbols,
   integrate,
   integrateExpression,
+  parseAssignments,
   sampleFunction,
   simplifyExpression,
+  symbolTex,
   solveEquation,
   toTex,
 } from '../src/core/math/engine';
@@ -111,5 +113,33 @@ describe('amostragem', () => {
   it('marca valores fora do domínio como null', () => {
     const s = sampleFunction('sqrt(x)', 'x', -1, 1, 3);
     expect(s.y).toEqual([null, 0, 1]);
+  });
+});
+
+describe('atribuições', () => {
+  it('avalia em sequência', () => {
+    expect(parseAssignments('a = 2; b = 3*a\nc = a + b')).toEqual({ a: 2, b: 6, c: 8 });
+  });
+  it('usa o escopo base', () => {
+    expect(parseAssignments('E = m*c^2', { m: 1, c: 3 })).toEqual({ E: 9 });
+  });
+  it('rejeita formatos inválidos', () => {
+    expect(() => parseAssignments('2 = a')).toThrow(/inválida/);
+    expect(() => parseAssignments('pi = 3')).toThrow(/reservado/);
+    expect(() => parseAssignments('d = 3 m')).toThrow(/sem unidades/);
+  });
+});
+
+describe('LaTeX de variáveis', () => {
+  it('itálico, índices e letras gregas', () => {
+    expect(symbolTex('m')).toBe('m');
+    expect(symbolTex('v0')).toBe('{v}_{0}');
+    expect(symbolTex('T_h')).toBe('{T}_{h}');
+    expect(symbolTex('lambda_max')).toBe('{\\lambda}_{\\mathrm{max}}');
+    expect(symbolTex('eps0')).toBe('\\varepsilon_0');
+    expect(toTex('m * a')).not.toMatch(/\\cdot[a-z]/);
+  });
+  it('mantém unidades em romano quando pedido', () => {
+    expect(toTex('3 m', false)).toContain('\\mathrm{m}');
   });
 });

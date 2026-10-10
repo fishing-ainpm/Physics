@@ -94,10 +94,76 @@ export function parseExpression(expr: string): MathNode {
   }
 }
 
-/** Converte uma expressão para LaTeX (para exibição com KaTeX). */
-export function toTex(expr: string | MathNode): string {
+const GREEK = new Set(
+  'alpha beta gamma delta epsilon varepsilon zeta eta theta vartheta iota kappa lambda mu nu xi rho sigma tau upsilon phi varphi chi psi omega Gamma Delta Theta Lambda Xi Pi Sigma Upsilon Phi Psi Omega hbar'.split(' '),
+);
+
+/** LaTeX de símbolos com significado físico conhecido (constantes da plataforma). */
+const SYMBOL_TEX: Record<string, string> = {
+  hbar: '\\hbar',
+  kB: 'k_B',
+  qe: 'e',
+  me: 'm_e',
+  mp: 'm_p',
+  mn: 'm_n',
+  amu: 'u',
+  eps0: '\\varepsilon_0',
+  mu0: '\\mu_0',
+  NA: 'N_A',
+  sigmaSB: '\\sigma',
+  bWien: 'b',
+  a0: 'a_0',
+  g0: 'g_0',
+  Msun: 'M_\\odot',
+};
+
+function namePart(part: string, sub: boolean): string {
+  if (GREEK.has(part)) return `\\${part}`;
+  if (part.length === 1 || /^\d+$/.test(part)) return part;
+  return sub ? `\\mathrm{${part}}` : `\\mathit{${part}}`;
+}
+
+/** Nome de variável → LaTeX em itálico: "v0" → v_{0}, "T_h" → T_{h}, "lambda_max" → λ_{max}. */
+export function symbolTex(name: string): string {
+  if (SYMBOL_TEX[name]) return SYMBOL_TEX[name];
+  let base = name;
+  let sub = '';
+  const us = name.indexOf('_');
+  if (us > 0) {
+    base = name.slice(0, us);
+    sub = name.slice(us + 1);
+  } else {
+    const m = name.match(/^([A-Za-z]+?)(\d+)$/);
+    if (m) [, base, sub] = m;
+  }
+  const b = namePart(base, false);
+  return sub ? `{${b}}_{${sub.split('_').map((p) => namePart(p, true)).join(',')}}` : b;
+}
+
+function texOptions(italicSymbols: boolean) {
+  return {
+    parenthesis: 'auto' as const,
+    implicit: 'hide' as const,
+    handler: italicSymbols
+      ? (node: MathNode) => {
+          if (node.type !== 'SymbolNode') return undefined;
+          const name = (node as unknown as { name: string }).name;
+          if (RESERVED.has(name)) return undefined;
+          // Chaves evitam colagem com comandos vizinhos (ex.: "\\cdot" + "a").
+          return `{${symbolTex(name)}}`;
+        }
+      : undefined,
+  };
+}
+
+/**
+ * Converte uma expressão para LaTeX (para exibição com KaTeX).
+ * Com `italicSymbols` (padrão) os símbolos são tratados como variáveis
+ * (itálico); use `false` para expressões com unidades (m, s, kg em romano).
+ */
+export function toTex(expr: string | MathNode, italicSymbols = true): string {
   const node = typeof expr === 'string' ? parseExpression(expr) : expr;
-  return node.toTex({ parenthesis: 'auto', implicit: 'hide' });
+  return node.toTex(texOptions(italicSymbols));
 }
 
 /** Lista símbolos livres (variáveis) de uma expressão, sem funções nem constantes. */
@@ -193,7 +259,7 @@ export function simplifyExpression(expr: string): SymbolicResult {
   const node = parseExpression(expr);
   try {
     const s = simplify(node);
-    return { text: s.toString(), tex: s.toTex({ parenthesis: 'auto', implicit: 'hide' }) };
+    return { text: s.toString(), tex: s.toTex(texOptions(true)) };
   } catch (err) {
     throw translateError(err);
   }
@@ -204,7 +270,7 @@ export function differentiate(expr: string, variable: string): SymbolicResult {
   const node = parseExpression(expr);
   try {
     const d = simplify(derivative(node, variable));
-    return { text: d.toString(), tex: d.toTex({ parenthesis: 'auto', implicit: 'hide' }) };
+    return { text: d.toString(), tex: d.toTex(texOptions(true)) };
   } catch (err) {
     throw translateError(err);
   }
@@ -532,3 +598,27 @@ export function sampleFunction(
 }
 
 export { translateError };
+
+/**
+ * Lê atribuições numéricas como "a = 2; b = 3*a" (separadas por ";" ou
+ * quebra de linha), avaliadas em sequência sobre o escopo base.
+ */
+export function parseAssignments(text: string, base: Scope = {}): Record<string, number> {
+  const out: Record<string, number> = {};
+  const statements = text.split(/[;\n]/).map((s) => s.trim()).filter(Boolean);
+  for (const st of statements) {
+    const m = st.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=(?!=)\s*(.+)$/);
+    if (!m) throw new MathError(`Atribuição inválida: "${st}". Use o formato nome = valor.`);
+    const [, name, expr] = m;
+    if (RESERVED.has(name)) throw new MathError(`"${name}" é reservado e não pode ser redefinido.`);
+    let r: FormattedValue;
+    try {
+      r = evaluateExpression(expr, { ...base, ...out });
+    } catch (err) {
+      throw new MathError(`${name}: ${(err as Error).message}`);
+    }
+    if (r.number === undefined) throw new MathError(`${name} deve ser um número real (sem unidades); obteve ${r.text}.`);
+    out[name] = r.number;
+  }
+  return out;
+}

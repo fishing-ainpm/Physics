@@ -71,11 +71,11 @@ export const cosmologyModel: SimulationModel = {
   method: 'Quadratura de Simpson adaptativa (com substituição a = u² perto do Big Bang).',
   assumptions: ['Métrica FLRW (universo homogêneo e isotrópico)', 'Matéria sem pressão, radiação com w = 1/3, Λ constante (w = −1)', 'Neutrinos tratados como radiação ou matéria (não ambos)'],
   limitations: ['Não modela energia escura dinâmica (w ≠ −1) nem a transição dos neutrinos massivos', 'Parâmetros que fazem H² ≤ 0 no passado (sem Big Bang) são rejeitados'],
-  references: ['Hogg (1999), "Distance measures in cosmology", arXiv:astro-ph/9905116', 'Planck 2018 VI: H₀ = 67,4, Ωm = 0,315 (A&A 641, A6)'],
+  references: ['Hogg (1999), "Distance measures in cosmology", arXiv:astro-ph/9905116', 'Planck 2018 VI: H₀ = 67,4, Ωm = 0,315 (A&A 641, A6); ΩΛ padrão = 1 − Ωm − Ωr (universo plano)'],
   parameters: [
     { key: 'H0', label: 'Constante de Hubble H₀', unit: 'km/s/Mpc', default: 67.4, min: 1, max: 200, step: 0.1 },
     { key: 'Om', label: 'Densidade de matéria Ωm', unit: '', default: 0.315, min: 0, max: 5, step: 0.005 },
-    { key: 'OL', label: 'Constante cosmológica ΩΛ', unit: '', default: 0.685, min: -2, max: 5, step: 0.005 },
+    { key: 'OL', label: 'Constante cosmológica ΩΛ', unit: '', default: 0.684909, min: -2, max: 5, step: 0.005 },
     { key: 'Or', label: 'Densidade de radiação Ωr', unit: '', default: 9.1e-5, min: 0, max: 1, step: 1e-5 },
     { key: 'zmax', label: 'Redshift máximo (distâncias)', unit: '', default: 5, min: 0.01, max: 1100, step: 0.1 },
   ],

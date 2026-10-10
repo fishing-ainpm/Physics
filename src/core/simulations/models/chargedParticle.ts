@@ -49,8 +49,8 @@ export const chargedParticleModel: SimulationModel = {
   limitations: ['Invalida-se para v ≳ 0,1c (use o integrador de Boris relativístico)', 'Sem interação entre partículas'],
   references: ['Boris (1970); Birdsall & Langdon, Plasma Physics via Computer Simulation', 'Jackson, Classical Electrodynamics, §12'],
   parameters: [
-    { key: 'q', label: 'Carga (em unidades de e)', unit: 'e', default: 1, min: -100, max: 100, step: 1 },
-    { key: 'm', label: 'Massa (em massas do próton)', unit: 'mₚ', default: 1, min: 1e-4, max: 1e4, step: 0.001, help: 'Elétron ≈ 0,000544' },
+    { key: 'q', label: 'Carga', unit: 'e', default: 1, min: -100, max: 100, step: 1 },
+    { key: 'm', label: 'Massa', unit: 'mₚ', default: 1, min: 1e-4, max: 1e4, step: 0.001, help: 'Elétron ≈ 0,000544' },
     { key: 'Bz', label: 'Campo magnético B_z', unit: 'T', default: 0.01, min: 1e-9, max: 100, step: 0.001 },
     { key: 'Ex', label: 'Campo elétrico E_x', unit: 'V/m', default: 0, min: -1e7, max: 1e7, step: 10 },
     { key: 'Ey', label: 'Campo elétrico E_y', unit: 'V/m', default: 200, min: -1e7, max: 1e7, step: 10 },

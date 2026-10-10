@@ -2,7 +2,10 @@
  * Constantes físicas em unidades SI.
  *
  * Fonte: CODATA 2018 (NIST, https://physics.nist.gov/cuu/Constants/) e
- * definições do SI revisado em 2019. Valores marcados como "exato" são
+ * definições do SI revisado em 2019.
+ *
+ * Grandezas que também são unidades (eV, au, parsec, ano-luz) ficam no
+ * sistema de unidades, não aqui, para não conflitar com expressões como "1 eV". Valores marcados como "exato" são
  * definidos por convenção. Constantes astronômicas: IAU 2012/2015.
  */
 export interface PhysicalConstant {
@@ -41,10 +44,6 @@ export const CONSTANTS: PhysicalConstant[] = [
   { symbol: 'bWien', name: 'Constante de deslocamento de Wien', value: 2.897771955e-3, unit: 'm*K', relUncertainty: 0, tex: 'b', source: 'CODATA 2018 (exato)' },
   { symbol: 'a0', name: 'Raio de Bohr', value: 5.29177210903e-11, unit: 'm', relUncertainty: 1.5e-10, tex: 'a_0', source: 'CODATA 2018' },
   { symbol: 'g0', name: 'Gravidade padrão', value: 9.80665, unit: 'm/s^2', relUncertainty: 0, tex: 'g_0', source: 'CGPM 1901 (exato)' },
-  { symbol: 'eV', name: 'Elétron-volt', value: 1.602176634e-19, unit: 'J', relUncertainty: 0, tex: '\\mathrm{eV}', source: 'SI (exato)' },
-  { symbol: 'au', name: 'Unidade astronômica', value: 149597870700, unit: 'm', relUncertainty: 0, tex: '\\mathrm{au}', source: 'IAU 2012 (exato)' },
-  { symbol: 'pc', name: 'Parsec', value: 3.0856775814913673e16, unit: 'm', relUncertainty: 0, tex: '\\mathrm{pc}', source: 'IAU 2015 (exato)' },
-  { symbol: 'ly', name: 'Ano-luz', value: 9.4607304725808e15, unit: 'm', relUncertainty: 0, tex: '\\mathrm{ly}', source: 'IAU (exato, ano juliano)' },
   { symbol: 'Msun', name: 'Massa solar nominal', value: 1.98847e30, unit: 'kg', relUncertainty: 4.6e-5, tex: 'M_\\odot', source: 'IAU 2015 (GM☉/G)' },
 ];
 

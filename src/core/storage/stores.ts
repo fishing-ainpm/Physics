@@ -230,6 +230,8 @@ export interface HistoryEntry {
   input: string;
   output: string;
   ok: boolean;
+  /** Dados para reabrir o cálculo na ferramenta de origem. */
+  payload?: Record<string, unknown>;
 }
 
 export class HistoryStore {
@@ -265,6 +267,7 @@ export class HistoryStore {
 
   add(entry: Omit<HistoryEntry, 'id' | 'timestamp'>): HistoryEntry {
     const e: HistoryEntry = { ...entry, input: entry.input.slice(0, 2000), output: entry.output.slice(0, 4000), id: newId(), timestamp: Date.now() };
+    if (e.payload !== undefined && (typeof e.payload !== 'object' || e.payload === null || JSON.stringify(e.payload).length > 20000)) delete e.payload;
     this.entries = [e, ...this.entries].slice(0, HistoryStore.MAX);
     this.persist();
     return e;
