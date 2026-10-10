@@ -4,6 +4,10 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Versão a publicar (ex.: v0.1.0); a tag é criada no commit escolhido'
+        required: true
 
 permissions:
   contents: write
@@ -33,10 +37,12 @@ jobs:
           path: release/*.exe
 
       - name: Publicar Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
-          name: Física Teórica ${{ github.ref_name }}
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          name: Física Teórica ${{ inputs.tag || github.ref_name }}
           files: release/*.exe
           body: |
             Aplicativo de desktop para Windows (64 bits).

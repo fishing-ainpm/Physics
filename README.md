@@ -58,7 +58,7 @@ A plataforma também é distribuída como programa para Windows, empacotada com 
 - **Baixar:** página [Releases](../../releases) do repositório. Use `FisicaTeorica-Setup-<versão>.exe` (instalador) ou `FisicaTeorica-Portatil-<versão>.exe` (roda sem instalar).
 - **Rodar a versão desktop em desenvolvimento:** `npm run desktop`.
 - **Gerar o `.exe` localmente:** `npm run dist:win` (os arquivos saem em `release/`). No Windows funciona direto; no Linux/macOS é preciso ter o Wine instalado (com suporte a 32 bits).
-- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila no Windows e anexa os executáveis ao Release.
+- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila no Windows e anexa os executáveis ao Release. Também dá para disparar manualmente em **Actions → Release Windows → Run workflow**, informando a versão (ex.: `v0.2.0`); a tag é criada automaticamente.
 
 O executável não tem assinatura digital, então o Windows SmartScreen pode mostrar um aviso na primeira execução ("Mais informações" → "Executar assim mesmo").
 
