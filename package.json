@@ -10,14 +10,9 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
-  },
-  "dependencies": {
-    "katex": "^0.19.0",
-    "mathjs": "^15.2.0",
-    "plotly.js-dist-min": "^4.1.2",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "test:watch": "vitest",
+    "desktop": "npm run build && electron .",
+    "dist:win": "npm run build && electron-builder --win --x64"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
@@ -25,8 +20,59 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3",
+    "katex": "^0.19.0",
+    "mathjs": "^15.2.0",
+    "plotly.js-dist-min": "^4.1.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.3"
+  },
+  "main": "electron/main.cjs",
+  "author": "fishing-ainpm",
+  "build": {
+    "appId": "com.fishingainpm.fisicateorica",
+    "productName": "Fisica Teorica",
+    "copyright": "fishing-ainpm",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Física Teórica",
+      "artifactName": "FisicaTeorica-Setup-${version}.exe"
+    },
+    "portable": {
+      "artifactName": "FisicaTeorica-Portatil-${version}.exe"
+    },
+    "publish": null
   }
 }

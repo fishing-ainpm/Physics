@@ -51,6 +51,17 @@ npm run preview    # serve a versão de produção em http://localhost:4173
 
 A pasta `dist/` é estática (caminhos relativos) e pode ser publicada em qualquer hospedagem de arquivos (GitHub Pages, Netlify, um servidor nginx etc.).
 
+## Aplicativo de desktop (Windows)
+
+A plataforma também é distribuída como programa para Windows, empacotada com [Electron](https://www.electronjs.org/). Funciona offline e guarda a biblioteca e o histórico no próprio computador.
+
+- **Baixar:** página [Releases](../../releases) do repositório. Use `FisicaTeorica-Setup-<versão>.exe` (instalador) ou `FisicaTeorica-Portatil-<versão>.exe` (roda sem instalar).
+- **Rodar a versão desktop em desenvolvimento:** `npm run desktop`.
+- **Gerar o `.exe` localmente:** `npm run dist:win` (os arquivos saem em `release/`). No Windows funciona direto; no Linux/macOS é preciso ter o Wine instalado (com suporte a 32 bits).
+- **Publicar uma nova versão:** atualize `version` no `package.json`, faça o commit e envie uma tag, por exemplo `git tag v0.2.0 && git push origin v0.2.0`. O workflow `.github/workflows/release.yml` roda os testes, compila no Windows e anexa os executáveis ao Release.
+
+O executável não tem assinatura digital, então o Windows SmartScreen pode mostrar um aviso na primeira execução ("Mais informações" → "Executar assim mesmo").
+
 ## Arquitetura
 
 ```
@@ -74,6 +85,9 @@ src/
     ├── components/        # Tex (KaTeX), Plot (Plotly), ResultPanel
     └── pages/             # Uma página por ferramenta
 tests/                     # Testes dos cálculos principais
+electron/main.cjs          # Processo principal do app de desktop
+build/                     # Ícone do aplicativo
+.github/workflows/         # Build e publicação do .exe no GitHub Releases
 ```
 
 Bibliotecas: [mathjs](https://mathjs.org) (matemática simbólica, numérica e unidades), [KaTeX](https://katex.org) (fórmulas), [Plotly.js](https://plotly.com/javascript/) (gráficos interativos, carregado sob demanda), React + Vite + TypeScript, Vitest.
