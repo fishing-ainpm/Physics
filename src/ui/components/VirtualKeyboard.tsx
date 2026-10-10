@@ -99,7 +99,16 @@ export function VirtualKeyboard({ open, onClose, onMissingTarget }: { open: bool
       document.documentElement.style.setProperty('--kb-height', '0px');
       return;
     }
-    const ro = new ResizeObserver(() => document.documentElement.style.setProperty('--kb-height', `${el.offsetHeight}px`));
+    const ro = new ResizeObserver(() => {
+      document.documentElement.style.setProperty('--kb-height', `${el.offsetHeight}px`);
+      // Mantém visível o campo em que se está digitando (o painel cobre a parte de baixo).
+      const target = currentTarget();
+      if (target) {
+        const r = target.getBoundingClientRect();
+        const limit = window.innerHeight - el.offsetHeight - 12;
+        if (r.bottom > limit) window.scrollBy({ top: r.bottom - limit, behavior: 'smooth' });
+      }
+    });
     ro.observe(el);
     return () => {
       ro.disconnect();

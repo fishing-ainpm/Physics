@@ -3,6 +3,6 @@
   "appName": "Física Teórica",
   "webDir": "dist",
   "android": {
-    "backgroundColor": "#0a0f1c"
+    "backgroundColor": "#000000"
   }
 }

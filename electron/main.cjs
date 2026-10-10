@@ -12,7 +12,7 @@ function createWindow() {
     height: 900,
     minWidth: 380,
     minHeight: 600,
-    backgroundColor: '#0a0f1c',
+    backgroundColor: '#000000',
     title: 'Física Teórica na Web',
     autoHideMenuBar: true,
     webPreferences: {

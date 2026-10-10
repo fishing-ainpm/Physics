@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { HistoryStore, LibraryStore, browserStorage } from '../core/storage/stores';
 import { AppContext, type AppContextValue, type Drafts, type Tab } from './AppContext';
+import { SettingsDialog } from './components/SettingsDialog';
 import { ShortcutsDialog } from './components/ShortcutsDialog';
 import { VirtualKeyboard } from './components/VirtualKeyboard';
 import { isEditable, submitCurrentPage, trackEditableFocus } from './input/editTarget';
 import { commandFor } from './input/shortcuts';
+import { applyOrientation, loadOrientation } from './orientation';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { EditorPage } from './pages/EditorPage';
 import { GraphsPage } from './pages/GraphsPage';
@@ -42,8 +44,13 @@ export function App() {
   const drafts = useRef<Drafts>({});
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => trackEditableFocus(), []);
+  // Reaplica a orientação escolhida (só tem efeito no app Android).
+  useEffect(() => {
+    applyOrientation(loadOrientation()).catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const onHash = () => setTab(tabFromHash());
@@ -82,7 +89,8 @@ export function App() {
           setHelpOpen(true);
           break;
         case 'escape':
-          if (helpOpen) setHelpOpen(false);
+          if (settingsOpen) setSettingsOpen(false);
+          else if (helpOpen) setHelpOpen(false);
           else if (keyboardOpen) setKeyboardOpen(false);
           else return;
           break;
@@ -91,7 +99,7 @@ export function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [navigate, helpOpen, keyboardOpen]);
+  }, [navigate, helpOpen, keyboardOpen, settingsOpen]);
 
   const ctx: AppContextValue = useMemo(
     () => ({
@@ -167,6 +175,12 @@ export function App() {
                 {t.label}
               </button>
             ))}
+            <button className="nav-settings" onClick={() => setSettingsOpen(true)} title="Configurações">
+              <span className="icon" aria-hidden>
+                ⚙
+              </span>
+              Configurações
+            </button>
           </nav>
           <div className="sidebar-tools">
             <button className="btn small" onClick={() => setKeyboardOpen((o) => !o)} aria-pressed={keyboardOpen} title="Teclado matemático (Alt+K)">
@@ -192,6 +206,7 @@ export function App() {
         </button>
       )}
       {helpOpen && <ShortcutsDialog onClose={() => setHelpOpen(false)} />}
+      {settingsOpen && <SettingsDialog onClose={() => setSettingsOpen(false)} onError={(m) => setToastMsg(m)} />}
       {toastMsg && (
         <div className="toast" role="status">
           {toastMsg}

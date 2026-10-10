@@ -1,19 +1,22 @@
 :root {
   color-scheme: dark;
-  --bg: #0a0f1c;
-  --bg-2: #0f1628;
-  --panel: #121a2e;
-  --panel-2: #18223a;
-  --border: #243150;
-  --text: #e3e9f6;
-  --muted: #8d9bb8;
-  --accent: #4fd1c5;
-  --accent-2: #7aa2ff;
-  --accent-ink: #062320;
-  --ok: #4ade80;
-  --warn: #fbbf24;
-  --err: #f87171;
-  --radius: 10px;
+  /* Preto puro com vidro discreto: superfícies são brancos translúcidos sobre #000. */
+  --bg: #000000;
+  --bg-2: rgba(255, 255, 255, 0.035);
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-2: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text: #f4f4f5;
+  --muted: #8b8b90;
+  --accent: #ffffff;
+  --accent-2: #e4e4e7;
+  --accent-ink: #000000;
+  --ok: #8ad6a6;
+  --warn: #e6c27a;
+  --err: #f08c8c;
+  --glass-blur: blur(18px) saturate(115%);
+  --radius: 14px;
   --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -22,18 +25,24 @@
 html, body, #root { height: 100%; }
 body {
   margin: 0;
-  background: radial-gradient(1200px 600px at 80% -10%, #12224a55, transparent), var(--bg);
+  /* Dois brilhos cinza muito fracos dão algo para o vidro desfocar, sem chamar atenção. */
+  background:
+    radial-gradient(700px 500px at 12% -10%, rgba(255, 255, 255, 0.07), transparent 70%),
+    radial-gradient(900px 700px at 105% 110%, rgba(255, 255, 255, 0.045), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
   color: var(--text);
   font-family: var(--sans);
   font-size: 15px;
   line-height: 1.5;
 }
 
-a { color: var(--accent-2); }
+a { color: var(--text); text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--text); }
 h1, h2, h3, h4 { margin: 0 0 0.5rem; line-height: 1.25; }
 h1 { font-size: 1.45rem; }
 h2 { font-size: 1.15rem; }
-h3 { font-size: 1rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+h3 { font-size: 0.95rem; color: var(--muted); font-weight: 500; }
 p { margin: 0 0 0.6rem; }
 code, .mono { font-family: var(--mono); font-size: 0.92em; }
 
@@ -148,8 +157,8 @@ button.btn.small { padding: 0.25rem 0.55rem; font-size: 0.85rem; }
   background: var(--bg-2); border: 1px solid var(--border); color: var(--text);
   border-radius: 999px; padding: 0.15rem 0.6rem; font-size: 0.8rem; font-family: var(--mono); cursor: pointer;
 }
-.chip:hover { border-color: var(--accent); }
-.tag { background: #1d2b4b; color: var(--accent-2); border-radius: 999px; padding: 0.05rem 0.5rem; font-size: 0.75rem; }
+.chip:hover { border-color: var(--border-strong); }
+.tag { background: var(--panel-2); color: var(--text); border-radius: 999px; padding: 0.05rem 0.5rem; font-size: 0.75rem; }
 
 /* ── Results ──────────────────────────────────────────── */
 .result {
@@ -163,7 +172,7 @@ button.btn.small { padding: 0.25rem 0.55rem; font-size: 0.85rem; }
 .result.ok { border-left-color: var(--ok); }
 .result.error { border-left-color: var(--err); }
 .result.warn { border-left-color: var(--warn); }
-.result-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.35rem; }
+.result-title { font-size: 0.85rem; font-weight: 500; color: var(--muted); margin-bottom: 0.35rem; }
 .result.ok .result-title { color: var(--ok); }
 .result.error .result-title { color: var(--err); }
 .result.warn .result-title { color: var(--warn); }
@@ -173,7 +182,7 @@ button.btn.small { padding: 0.25rem 0.55rem; font-size: 0.85rem; }
 
 .tex-block { overflow-x: auto; overflow-y: hidden; padding: 0.4rem 0; }
 .tex-block .katex-display { margin: 0.3rem 0; }
-.tex-preview { min-height: 3rem; display: flex; align-items: center; background: #0b1222; border: 1px dashed var(--border); border-radius: 8px; padding: 0.4rem 0.8rem; }
+.tex-preview { min-height: 3rem; display: flex; align-items: center; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.8rem; }
 .big-value { font-family: var(--mono); font-size: 1.15rem; word-break: break-all; }
 
 table.data { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
@@ -202,7 +211,7 @@ details.doc ul { margin: 0.3rem 0 0.6rem; padding-left: 1.2rem; color: var(--mut
 .toast {
   position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%);
   background: var(--panel-2); border: 1px solid var(--accent); color: var(--text);
-  padding: 0.6rem 1rem; border-radius: 8px; z-index: 100; box-shadow: 0 8px 24px #0008; max-width: calc(100vw - 2rem);
+  padding: 0.6rem 1rem; border-radius: 8px; z-index: 100; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); max-width: calc(100vw - 2rem);
 }
 
 /* ── Toque e celular ──────────────────────────────────── */
@@ -229,7 +238,7 @@ button, .chip, .tag, input[type='range'], select { touch-action: manipulation; }
 .vk {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
   background: var(--bg-2); border-top: 1px solid var(--border);
-  box-shadow: 0 -8px 24px #0008;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.6);
   padding: 0.5rem max(0.5rem, env(safe-area-inset-left)) calc(0.5rem + env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-right));
   user-select: none; -webkit-user-select: none;
 }
@@ -249,8 +258,8 @@ button, .chip, .tag, input[type='range'], select { touch-action: manipulation; }
   background: var(--panel-2); color: var(--text); font: inherit; font-size: 1.05rem;
   cursor: pointer; padding: 0 0.2rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.vk-key:hover { border-color: var(--accent-2); }
-.vk-key:active { background: #22305a; transform: translateY(1px); }
+.vk-key:hover { border-color: var(--border-strong); }
+.vk-key:active { background: rgba(255, 255, 255, 0.16); transform: translateY(1px); }
 .vk-key.accent { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
 @media (max-width: 480px) {
   .vk-suppress { display: none; }
@@ -260,14 +269,73 @@ button, .chip, .tag, input[type='range'], select { touch-action: manipulation; }
   position: fixed; right: max(1rem, env(safe-area-inset-right)); bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 40;
   width: 52px; height: 52px; border-radius: 50%;
   background: var(--accent); color: var(--accent-ink); border: none; font-size: 1.4rem; cursor: pointer;
-  box-shadow: 0 6px 18px #0009;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
 }
 .toast { bottom: calc(1rem + var(--kb-height, 0px) + env(safe-area-inset-bottom)); }
 
 /* ── Janela de atalhos ────────────────────────────────── */
-.modal-backdrop { position: fixed; inset: 0; background: #0009; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
 .modal { width: 100%; max-width: 620px; max-height: calc(100vh - 2rem); overflow: auto; }
 kbd {
   font-family: var(--mono); font-size: 0.82rem; background: var(--bg-2); border: 1px solid var(--border);
   border-bottom-width: 2px; border-radius: 5px; padding: 0.05rem 0.4rem;
+}
+
+/* ── Vidro ────────────────────────────────────────────── */
+.card, .result, .sidebar, .vk, .modal, .toast {
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+.card, .modal { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+.sidebar { background: rgba(255, 255, 255, 0.025); border-color: var(--border); }
+/* No celular a barra fica fixa no topo e o conteúdo rola por baixo: precisa ser quase opaca. */
+@media (max-width: 900px) { .sidebar { background: rgba(8, 8, 10, 0.92); } }
+.vk { background: rgba(10, 10, 12, 0.985); }
+.toast { background: rgba(20, 20, 22, 0.8); border-color: var(--border-strong); }
+.item { background: rgba(255, 255, 255, 0.025); }
+.nav .icon { color: var(--muted); }
+.nav button[aria-current='page'] .icon { color: var(--text); }
+.tabs button[aria-selected='true'] { border-bottom-color: var(--text); }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 1px solid var(--border-strong); outline-offset: 0; border-color: var(--border-strong); }
+button.btn:hover:not(:disabled) { border-color: var(--border-strong); background: var(--panel-2); }
+button.btn.primary:hover:not(:disabled) { background: #e6e6e6; filter: none; }
+select option { background: #111; color: var(--text); }
+::selection { background: rgba(255, 255, 255, 0.25); }
+
+/* ── Configurações ────────────────────────────────────── */
+.nav .nav-settings { margin-top: 0.75rem; border-top: 1px solid var(--border); border-radius: 0 0 8px 8px; padding-top: 0.75rem; }
+@media (max-width: 900px) { .nav .nav-settings { margin-top: 0; border-top: 0; padding-top: 0.45rem; border-radius: 8px; } }
+.settings-group { border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem; margin: 1rem 0 0; }
+.settings-group legend { color: var(--muted); padding: 0 0.3rem; font-size: 0.9rem; }
+.settings-group:disabled .orientation-option { opacity: 0.45; cursor: not-allowed; }
+.orientation-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.orientation-option {
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem; text-align: center;
+  border: 1px solid var(--border); border-radius: 12px; padding: 0.75rem 0.4rem; cursor: pointer; background: var(--bg-2);
+}
+.orientation-option.selected { border-color: var(--text); background: var(--panel-2); }
+.orientation-option input { position: absolute; opacity: 0; pointer-events: none; }
+.orientation-option:has(input:focus-visible) { outline: 1px solid var(--border-strong); }
+.orientation-label { font-weight: 500; }
+.orientation-icon { display: block; border: 2px solid var(--text); border-radius: 5px; margin: 0.25rem 0; }
+.orientation-icon.portrait { width: 18px; height: 30px; }
+.orientation-icon.landscape { width: 30px; height: 18px; }
+.orientation-icon.auto { width: 24px; height: 24px; border-radius: 50%; border-style: dashed; }
+
+/* ── Celular deitado (paisagem) ───────────────────────── */
+@media (orientation: landscape) and (max-height: 540px) {
+  .brand { display: none; }
+  .sidebar { padding: 0.3rem 0.5rem; }
+  .nav button { min-height: 36px; padding: 0.3rem 0.6rem; }
+  .main { padding-top: 0.75rem; }
+  .page-header p { display: none; }
+  .grid-2, .grid-sidebar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .plot { min-height: 260px; }
+  .vk { padding-top: 0.3rem; }
+  .vk-head { margin-bottom: 0.25rem; }
+  .vk-tabs button { min-height: 30px; padding: 0.15rem 0.6rem; }
+  .vk-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0.25rem; }
+  .vk-controls { gap: 0.25rem; margin-top: 0.25rem; }
+  .vk-key { min-height: 36px; font-size: 0.9rem; }
+  .vk-fab { width: 44px; height: 44px; }
 }

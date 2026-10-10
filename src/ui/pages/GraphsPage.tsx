@@ -1,6 +1,7 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { freeSymbols, sampleFunction } from '../../core/math/engine';
 import { CONSTANTS, constantsScope } from '../../core/physics/constants';
+import { validateFormulaText } from '../../core/physics/formulaSolver';
 import type { PlotSpec } from '../../core/simulations/types';
 import { useApp } from '../AppContext';
 import { Plot } from '../components/Plot';
@@ -52,6 +53,7 @@ export function GraphsPage() {
     for (const f of functions) {
       if (!f.trim()) continue;
       try {
+        validateFormulaText(f, false);
         for (const s of freeSymbols(f)) if (s !== variable && !(useConstants && CONST_SET.has(s))) set.add(s);
       } catch {
         /* erro de sintaxe aparece no painel */
@@ -89,6 +91,7 @@ export function GraphsPage() {
     for (const f of input.functions) {
       if (!f.trim()) continue;
       try {
+        validateFormulaText(f, false);
         const { x, y } = sampleFunction(f, input.variable, lo, hi, n, scope);
         const valid = y.filter((v): v is number => v !== null);
         if (valid.length === 0) errors.push(`${f}: nenhum ponto real no intervalo.`);

@@ -73,6 +73,7 @@ O app Android é a mesma plataforma empacotada com [Capacitor](https://capacitor
 
 - **Baixar:** arquivo `FisicaTeorica-<versão>.apk` na página [Releases](../../releases). No celular, abra o arquivo e autorize a instalação desta fonte.
 - **Compilar localmente:** precisa do Android SDK e do JDK 21. Rode `npm run android:apk`; o APK sai em `android/app/build/outputs/apk/release/`. Para abrir no Android Studio, use `npm run android:sync` e abra a pasta `android/`.
+- **Orientação da tela:** em **Configurações** (⚙ na barra de navegação) dá para escolher Automática (gira com o aparelho), Retrato ou Paisagem. Com o celular deitado, o layout usa duas colunas e o teclado matemático fica com 12 teclas por linha.
 - **Versão:** `versionName` e `versionCode` vêm do `version` do `package.json` (0.2.0 → código 200).
 - **Assinatura:** por padrão o APK é assinado com a chave de teste versionada em `android/app/fisicateorica-debug.keystore`. Ela mantém a mesma assinatura entre versões, para o app atualizar sem desinstalar, mas é pública e não serve para a Play Store. Para usar uma chave própria, defina no build as variáveis `ANDROID_KEYSTORE_PATH`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD`. Trocar de chave obriga quem já instalou a desinstalar uma vez.
 
@@ -140,6 +141,19 @@ Acrescente um item a `FORMULA_CATALOG` em `src/core/physics/formulas.ts`. O test
 - Constantes matemáticas: `pi`, `e`.
 - Constantes físicas (valores SI): `c`, `G`, `h`, `hbar`, `qe` (carga elementar), `kB`, `NA`, `R`, `me`, `mp`, `mn`, `amu`, `eps0`, `mu0`, `alpha`, `sigmaSB`, `bWien`, `a0`, `g0`, `Msun`. A lista completa está em **Unidades → Constantes físicas**.
 - Unidades (calculadora e conversor): `m`, `km`, `s`, `kg`, `N`, `J`, `eV`, `MeV`, `K`, `degC`, `Pa`, `atm`, `T`, `au`, `lightyear`, `parsec` e as demais do mathjs, com prefixos SI.
+
+### Validação no editor de fórmulas e nos gráficos
+
+O editor só aceita expressões matemáticas. O texto é recusado, com uma mensagem explicando o motivo, quando tem:
+
+- **Texto comum**, como palavras seguidas sem operador entre elas (`sua mãe de quatrão`, `calcule a força`). Nenhuma variável é criada a partir das palavras.
+- **Falta de operador** entre dois nomes (`F = m a` → use `m*a`).
+- **Acentos ou letras fora de a–z** nos nomes (`mãe`, `λ`). Para letras gregas, escreva o nome: `lambda`, `theta`, `omega`.
+- **Funções desconhecidas**, ou uma variável usada como função (`F = m(a+b)` → use `m*(a+b)`).
+- **Nome de função sem argumento** (`y = sin + 1`).
+- **Palavras reservadas** (`to`, `in`, `and`, `or`, `not`…), **símbolos fora da matemática** (`;`, `[ ]`, `<`, `>`, aspas) ou mais de um `=`.
+
+Continuam valendo: nomes com dígitos e `_` (`v0`, `m1`, `T_h`, `lambda_max`, `v_esc`), letras gregas por extenso, as constantes físicas (`c`, `G`, `hbar`, `kB`…), multiplicação implícita com número (`2x`, `2 x`), `mod`, `!` e as funções comuns (`sin`, `cos`, `tan` e inversas e hiperbólicas, `exp`, `log`, `log10`, `sqrt`, `cbrt`, `abs`, `atan2`, `min`, `max`, `floor`, `ceil`, `round`…). A regra fica em `src/core/math/formulaValidation.ts`; os testes estão em `tests/formulaValidation.test.ts`. A calculadora continua aceitando unidades e conversões (`3 m/s * 2 s`, `5 km to mi`).
 
 > Na calculadora, com "Usar constantes físicas" ativado, `h` é a constante de Planck. Para horas use `hour`.
 

@@ -20,6 +20,7 @@
     "@capacitor/android": "^8.5.3",
     "@capacitor/cli": "^8.5.3",
     "@capacitor/core": "^8.5.3",
+    "@capacitor/screen-orientation": "^8.0.2",
     "@types/node": "^26.6.5",
     "@types/plotly.js-dist-min": "^2.3.4",
     "@types/react": "^19.3.0",

@@ -13,6 +13,7 @@ import {
   splitEquation,
   toTex,
 } from '../math/engine';
+import { validateFormula } from '../math/formulaValidation';
 import { CONSTANTS, constantsScope } from './constants';
 
 const CONSTANT_SYMBOLS = new Set(CONSTANTS.map((k) => k.symbol));
@@ -26,7 +27,13 @@ export interface FormulaAnalysis {
   constants: string[];
 }
 
+/** Valida a sintaxe da fórmula (rejeita texto comum, funções desconhecidas etc.). */
+export function validateFormulaText(expression: string, allowEquation = true): void {
+  validateFormula(expression, allowEquation, CONSTANT_SYMBOLS);
+}
+
 export function analyzeFormula(expression: string): FormulaAnalysis {
+  validateFormulaText(expression);
   const eq = splitEquation(expression);
   const text = eq ? `${eq.lhs} == ${eq.rhs}` : expression;
   const node = parseExpression(text);
@@ -60,6 +67,7 @@ export function solveFormula(expression: string, target: string | null, values: 
   for (const [k, val] of Object.entries(values)) {
     if (!Number.isFinite(val)) throw new MathError(`Valor inválido para ${k}.`);
   }
+  validateFormulaText(expression);
   const scope: Record<string, number> = { ...constantsScope(), ...values };
   const eq = splitEquation(expression);
 

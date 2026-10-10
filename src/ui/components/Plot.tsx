@@ -9,7 +9,8 @@ function loadPlotly(): Promise<PlotlyModule> {
   return plotlyPromise;
 }
 
-const COLORS = ['#4fd1c5', '#7aa2ff', '#f6ad55', '#f687b3', '#b794f4', '#68d391', '#fc8181', '#faf089'];
+// Primeira série em branco, as demais em tons suaves para continuarem distinguíveis.
+const COLORS = ['#f4f4f5', '#93c5fd', '#fca5a5', '#a7f3d0', '#fcd34d', '#c4b5fd', '#f9a8d4', '#a1a1aa'];
 
 export interface PlotProps {
   spec: PlotSpec;
@@ -39,17 +40,17 @@ export function Plot({ spec, logX, logY, height = 360 }: PlotProps) {
           marker: { color: COLORS[i % COLORS.length], size: 7 },
         }));
         const axis = {
-          gridcolor: '#1e2a45',
-          zerolinecolor: '#33456e',
-          linecolor: '#33456e',
-          tickfont: { color: '#8d9bb8' },
+          gridcolor: 'rgba(255,255,255,0.06)',
+          zerolinecolor: 'rgba(255,255,255,0.18)',
+          linecolor: 'rgba(255,255,255,0.18)',
+          tickfont: { color: '#8b8b90' },
           exponentformat: 'power' as const,
         };
         const layout = {
-          title: { text: spec.title, font: { size: 14, color: '#e3e9f6' } },
+          title: { text: spec.title, font: { size: 14, color: '#f4f4f5' } },
           paper_bgcolor: 'rgba(0,0,0,0)',
-          plot_bgcolor: '#0b1222',
-          font: { family: 'Inter, system-ui, sans-serif', color: '#e3e9f6' },
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { family: 'Inter, system-ui, sans-serif', color: '#f4f4f5' },
           margin: { l: 60, r: 20, t: 40, b: 50 },
           height,
           showlegend: spec.traces.length > 1,
